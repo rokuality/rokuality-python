@@ -19,7 +19,7 @@ See the [Getting Started: XBox](https://github.com/rokuality/rokuality-server) s
 
 
 ### The Basics:
-The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/rokuality-python/blob/master/tests/test_roku.py)  or the [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) for a full list of samples.
+The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_roku.py)  or the [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) for a full list of samples.
 
 #### Declare a driver to connect to the server:
 ```python
@@ -119,8 +119,8 @@ Screen text of the device is returned as a collection of ScreenText objects as f
         height = screen_text.get_height()
         confidence = screen_text.get_confidence()
 ```
-TODO
-Alternatively you can get the entire device screen as a full string via `driver.screen().get_text_as_string();`
+
+Alternatively you can get the entire device screen as a full string via `driver.screen().get_text_as_string()`
 
 #### Device Capabilities explained:
 Various capabilities and values can be provided and passed to your driver instance at startup. Some of them are required and others are optional. The following are the minimum capabilities **required** to start a driver session.
@@ -152,7 +152,30 @@ Various capabilities and values can be provided and passed to your driver instan
 
 #### Xbox
 ```python
-    '''TODO'''
+    '''init a capability object'''
+    capabilities = DeviceCapabilities()
+
+    '''indicates you want a XBox test'''
+    capabilities.add_capability("Platform", "XBox")
+
+    '''set the path or url to your .appxbundle package to install'''
+    capabilities.add_capability("AppPackage", "path/or/url/to/your/apppackage")
+
+    '''the app id - will be the friendly app name of your appxbundle'''
+    capabilities.add_capability("App", "appid")
+
+    '''set your xbox ip address'''
+    capabilities.add_capability("DeviceIPAddress", "yourdeviceipaddress")
+
+    '''set your logitech harmony info. see the why harmony and harmony setups section of the main server page for details'''
+    capabilities.add_capability("HomeHubIPAddress", "yourharmonyipaddress")
+    capabilities.add_capability("DeviceName", "devicenameassavedinharmony")
+
+    '''set your OCR module - options are "Tesseract" or "GoogleVision"'''
+    capabilities.add_capability("OCRType", "Tesseract")
+    
+    '''pass the capabilities and start your driver'''
+    driver = XBoxDriver("http://yourserverurl:yourrunningserverport", capabilities)
 ```
 
 | Capability  | Description | Required Or Optional | Notes |
