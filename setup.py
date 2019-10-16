@@ -23,7 +23,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="rokuality-python",
-    version="0.0.1",
+    version="1.0.0",
     author="rokualitydevs@rokuality.com",
     author_email="rokualitydevs@rokuality.com",
     description="Python bindings for the rokuality platform. End to end automation for Roku, Xbox, and more!",
