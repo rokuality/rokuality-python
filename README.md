@@ -34,7 +34,7 @@ The Rokuality bindings operate via Image Based Object Recognition and OCR techni
     '''HDMI device (playstation, cable settop box, androidtv, appletv, etc)'''
     driver = HDMIDriver("http://yourserverurl:yourrunningserverport", self.capabilities)
 ```
-This will take care of installing/launching your device app package, ensure the device is available and ready for test, and start a dedicated session on your device as indicated via your DeviceCapabilities object. See [Device Capabilities](#device-capabilities-explained) for an explanation of what capabilities are available for your driver startup.
+This will take care of installing/launching your device app package (if Roku or XBox), ensure the device is available and ready for test, and start a dedicated session on your device as indicated via your DeviceCapabilities object. See [Device Capabilities](#device-capabilities-explained) for an explanation of what capabilities are available for your driver startup.
 
 #### Finding elements:
 There are two primary ways of finding elements on your device:
@@ -247,13 +247,13 @@ Timeouts - By default the element timeout is set to 0 milliseconds, meaning if t
 
 ```python
     '''will fail immediately'''
-    driver.finder().find_element(By().text("no such test"))
+    driver.finder().find_element(By().text("no such text"))
 ```
 vs
 ```python
     '''will fail after 5 seconds'''
     driver.options().set_element_timeout(5000)
-    driver.finder().find_element(By().text("no such test"))
+    driver.finder().find_element(By().text("no such text"))
 ```
 It is generally recommended to set respective timeouts to reduce test flake, but setting the values too high can increase test duration.
 
@@ -262,7 +262,7 @@ Additionally you can set the interval of how often the element search polling wi
     '''will fail after 5 seconds polling every second'''
     driver.options().set_element_timeout(5000)
     driver.options().set_element_poll_interval(1000)
-    driver.finder().find_element(By().text("no such test"))
+    driver.finder().find_element(By().text("no such text"))
 ```
 
 #### Using Google Vision OCR:
