@@ -31,7 +31,7 @@ The Rokuality bindings operate via Image Based Object Recognition and OCR techni
     '''XBox'''
     driver = XBoxDriver("http://yourserverurl:yourrunningserverport", self.capabilities)
 
-    '''// HDMI device (playstation, cable settop box, androidtv, appletv, etc)'''
+    '''HDMI device (playstation, cable settop box, androidtv, appletv, etc)'''
     driver = HDMIDriver("http://yourserverurl:yourrunningserverport", self.capabilities)
 ```
 This will take care of installing/launching your device app package, ensure the device is available and ready for test, and start a dedicated session on your device as indicated via your DeviceCapabilities object. See [Device Capabilities](#device-capabilities-explained) for an explanation of what capabilities are available for your driver startup.
@@ -80,7 +80,7 @@ The element details include the elements location and size details as found on t
     Hello World!
 ```
 
-#### Sending remote control commands to the device - Roku and XBox::
+#### Sending remote control commands to the device - Roku and XBox:
 To send remote button presses to the device you can do the following:
 ```python
     '''roku'''
