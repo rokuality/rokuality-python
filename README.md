@@ -1,6 +1,6 @@
-# Rokuality Python - End to End Automation for Roku and XBox!
+# Rokuality Python - End to End Automation for Roku, XBox, Playstation, Cable SetTop Boxes, and More!
 
-The Rokuality platform allows you to distribute Roku and XBox end to end tests across multiple devices on your network. (Playstation and other devices coming soon!) The project goal is to provide a no cost/low cost open source solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Clone and start the [Rokuality Server](https://github.com/rokuality/rokuality-server), and start writing tests!
+The Rokuality platform allows you to distribute Roku, XBox, PS4, and Cable SetTop Box end to end tests across multiple devices on your network. The project goal is to provide a no cost/low cost open source solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Clone and start the [Rokuality Server](https://github.com/rokuality/rokuality-server), and start writing tests!
 
 ### Getting started: Get the Server
 Clone/Download and start the [Rokuality Server](https://github.com/rokuality/rokuality-server) which acts as a lightweight web server proxy for your test traffic. The server does all the 'heavy lifting' on the backend.
@@ -17,9 +17,11 @@ See the [Getting Started: Roku](https://github.com/rokuality/rokuality-server) s
 ### Getting started: XBox
 See the [Getting Started: XBox](https://github.com/rokuality/rokuality-server) section for details about preparing your XBox device for test.
 
+### Getting started: HDMI Connected Devices (Playstation, Cable SetTopBox, AndroidTV, AppleTV, and More)
+See the [Getting Started: HDMI Connected Devices (Playstation, Cable SetTopBox, AndroidTV, AppleTV, and More](https://github.com/rokuality/rokuality-server) section for details about preparing your Cable Settop Box, Playstation, AndroidTV, or AppleTV device for test.
 
 ### The Basics:
-The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_roku.py)  or the [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) for a full list of samples.
+The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_roku.py) or [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) or [HDMI example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_playstation.py) for a full list of samples.
 
 #### Declare a driver to connect to the server:
 ```python
@@ -28,6 +30,9 @@ The Rokuality bindings operate via Image Based Object Recognition and OCR techni
 
     '''XBox'''
     driver = XBoxDriver("http://yourserverurl:yourrunningserverport", self.capabilities)
+
+    '''// HDMI device (playstation, cable settop box, androidtv, appletv, etc)'''
+    driver = HDMIDriver("http://yourserverurl:yourrunningserverport", self.capabilities)
 ```
 This will take care of installing/launching your device app package, ensure the device is available and ready for test, and start a dedicated session on your device as indicated via your DeviceCapabilities object. See [Device Capabilities](#device-capabilities-explained) for an explanation of what capabilities are available for your driver startup.
 
@@ -75,7 +80,7 @@ The element details include the elements location and size details as found on t
     Hello World!
 ```
 
-#### Sending remote control commands to the device:
+#### Sending remote control commands to the device - Roku and XBox::
 To send remote button presses to the device you can do the following:
 ```python
     '''roku'''
@@ -87,6 +92,19 @@ To send remote button presses to the device you can do the following:
 All remote commands are available. See [roku remote command](https://github.com/rokuality/rokuality-python/blob/master/src/enums/roku_button.py) or [xbox remote command](https://github.com/rokuality/rokuality-python/blob/master/src/enums/xbox_button.py) for all available remote buttons. Also you can send literal characters to the device if you need to interact with a Roku search selector (coming soon for XBox as well):
 ```python
     roku_driver.remote().send_keys("typing out hello world on a search screen")
+```
+
+#### Sending remote control commands to the device - HDMI Devices (Playstation, Cable SetTop, AndroidTV, AppleTV, and more):
+To send remote button presses to the HDMI/IR device you can do the following:
+```java
+    '''get a list of available remote commands for your device'''
+    button_options = driver.remote().get_button_options()
+    print(button_options)
+    
+    '''send the desired button press to the device'''
+    driver.remote().press_button("DirectionUp")
+    driver.remote().press_button("Guide")
+    driver.remote().press_button("Select")
 ```
 
 #### Getting screen artifacts:
@@ -178,19 +196,49 @@ Various capabilities and values can be provided and passed to your driver instan
     driver = XBoxDriver("http://yourserverurl:yourrunningserverport", capabilities)
 ```
 
+#### HDMI Devices (Playstation, Cable SetTop, AndroidTV, AppleTV, and more)
+```python
+    '''init a capability object'''
+    capabilities = DeviceCapabilities()
+
+    '''indicates you want an HDMI test'''
+    capabilities.add_capability("Platform", "HDMI")
+
+    '''set your logitech harmony info. see the why harmony and harmony setups section of the main server page for details'''
+    capabilities.add_capability("HomeHubIPAddress", "yourharmonyipaddress")
+    capabilities.add_capability("DeviceName", "devicenameassavedinharmony")
+
+    """the video input and audio input names of your attached hdmi capture card. They can be found by running
+    the following commands:
+    MAC: ~/Rokuality/dependencies/ffmpeg_v4.1 -f avfoundation -list_devices true -i ""
+    WINDOWS: ~\Rokuality\dependencies\ffmpeg_win_v4.1\bin\ffmpeg.exe -list_devices true -f dshow -i dummy
+    """
+    capabilities.add_capability("VideoCaptureInput", "video input name")
+    capabilities.add_capability("AudioCaptureInput", "audio input name")
+
+    '''set your OCR module - options are "Tesseract" or "GoogleVision"'''
+    capabilities.add_capability("OCRType", "Tesseract")
+    
+    '''pass the capabilities and start your driver'''
+    driver = HDMIDriver("http://yourserverurl:yourrunningserverport", capabilities)
+```
+
 | Capability  | Description | Required Or Optional | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| Platform | Indicates the target platform for the tests. Currently only 'Roku' and 'XBox' are supported but Playstation and other devices coming soon.  | Required | String |
-| AppPackage | The sideloadable zip to be installed (Roku), or the .appxbundle (XBox). Must be a valid file path OR a valid url.  | Required | String |
-| DeviceIPAddress | The ip address of your Roku or XBox  | Required | Your device MUST be reachable from the machine running the Rokuality server. |
+| Platform | Indicates the target platform for the tests.  | Required | String - Options are 'Roku, 'XBox', or 'HDMI' |
+| AppPackage | The sideloadable zip to be installed (Roku), or the .appxbundle (XBox). Must be a valid file path OR a valid url.  | Required for Roku and XBox - IF the 'App' capability is not provided. Ignored for HDMI devices | String |
+| App | The friendly id of your app for Roku and XBox. For Roku this cap is optional. If you provide this cap and ommit the 'AppPackage' cap then the device will attempt to launch an already sideloaded .zip. For XBox this cap is always required and MUST be the app id of your installed .appxbundle - if you ommit the 'AppPackage' cap then the device will attempt to launch an already installed appxbundle matching this id. |Roku = Optional. XBox = Required. HDMI = Ignored | String |
+| DeviceIPAddress | The ip address of your Roku or XBox. Ignored for HDMI.  | Required for Roku or XBox | String - Your device MUST be reachable from the machine running the Rokuality server. |
 | DeviceUsername | The dev console username created when you enabled developer mode on your device  | Required - Roku Only | String |
 | DevicePassword | The dev console password created when you enabled developer mode on your device   | Required - Roku Only | String |
 | ImageMatchSimilarity | An optional image match similarity default used during Image locator evaluations. A lower value will allow for greater tolerance of image disimilarities between the image locator and the screen, BUT will also increase the possibility of a false positive.  | Optional | Double. Defaults to .90 |
 | ScreenSizeOverride | An optional 'WIDTHxHEIGHT' cap that all screen image captures will be resized to prior to match evaluation. Useful if you want to enforce test consistence across multiple device types and multiple developer machines or ci environments.  | Optional | String - I.e. a value of '1800x1200' will ensure that all image captures are resized to those specs before the locator evaluation happens no matter what the actual device screen size is.  |
 | OCRType | The OCR type - Options are 'Tesseract' OR 'GoogleVision'. In most cases Tesseract is more than enough but if you find that your textual evalutions are lacking reliability you can provide 'GoogleVision' as a more powerful alternative. BUT if the capability is set to 'GoogleVision' you MUST have a valid Google Vision account setup and provide the 'GoogleCredentials' capability with a valid file path to the oath2 .json file with valid credentials for the Google Vision service.  | Required | String 
 | GoogleCredentials | The path to a valid .json Google Auth key service file. | Optional but Required if the 'OCRType' capability is set to 'GoogleVision' | The .json service key must exist on the machine triggering the tests. See [Using Google Vision](#using-google-vision-ocr) for additional details.  |
-| HomeHubIPAddress | The ip address of your logitech harmony hub. | Required for those devices that indicate it during their setup requirement, i.e. XBox | String - See the [why harmony](https://github.com/rokuality/rokuality-server) and [configuring your harmony](https://github.com/rokuality/rokuality-server) sections of the server page for details. |
-| DeviceName | The name of your device as saved in your Harmony hub i.e. 'MyXBoxOne'. | Required for those devices that indicate it during their setup requirement, i.e. XBox | String |
+| HomeHubIPAddress | The ip address of your logitech harmony hub. | Required for XBox or HDMI. Ignored for Roku | String - See the [why harmony](https://github.com/rokuality/rokuality-server) and [configuring your harmony](https://github.com/rokuality/rokuality-server) sections of the server page for details. |
+| DeviceName | The name of your device as saved in your Harmony hub i.e. 'MyXBoxOne', or 'MyPlaystation4'. | Required for XBox and HDMI. Ignored for Roku | String |
+| VideoCaptureInput | The name of your video card capture video input if running an HDMI connected test. Will vary by the type of hdmi capture card. | Required for HDMI device types (Playstation, Cable SetTop Box, AndroidTV, AppleTV, etc. Ignored for Roku or XBox | Can be found by running a terminal command. For MAC: `~/Rokuality/dependencies/ffmpeg_v4.1 -f avfoundation -list_devices true -i ""` and for Windows: `~\Rokuality\dependencies\ffmpeg_win_v4.1\bin\ffmpeg.exe -list_devices true -f dshow -i dummy` |
+| AudioCaptureInput | The name of your video card capture audio input if running an HDMI connected test. Will vary by the type of hdmi capture card. | Required for HDMI device types (Playstation, Cable SetTop Box, AndroidTV, AppleTV, etc. Ignored for Roku or XBox | Can be found by running a terminal command. For MAC: `~/Rokuality/dependencies/ffmpeg_v4.1 -f avfoundation -list_devices true -i ""` and for Windows: `~\Rokuality\dependencies\ffmpeg_win_v4.1\bin\ffmpeg.exe -list_devices true -f dshow -i dummy` |
 
 #### Element Timeouts and Polling:
 There are two main options when it comes to element timeouts and polling
