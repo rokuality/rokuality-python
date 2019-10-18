@@ -10,7 +10,7 @@ from src.enums.roku_button import RokuButton
 from src.driver.roku.roku_device_info import RokuDeviceInfo
 from src.driver.screen_size import ScreenSize
 
-class TestClass_Two:
+class Test_RokuTests:
 
     DEMO_APP_URL = "https://rokualitypublic.s3.amazonaws.com/RokualityDemoApp.zip"
     SERVER_URL = "http://localhost:7777"

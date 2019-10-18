@@ -10,7 +10,7 @@ from src.enums.xbox_button import XBoxButton
 from src.driver.xbox.xbox_device_info import XBoxDeviceInfo
 from src.driver.screen_size import ScreenSize
 
-class TestClass_Two:
+class Test_XBoxTests:
 
     SERVER_URL = "http://localhost:7777"
 
