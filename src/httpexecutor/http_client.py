@@ -22,11 +22,11 @@ class HttpClient:
             raise ServerFailureException(
                 "The server failed to respond at " + self.server_url + ". Is the server listening at this location?")
 
-        if (response.status_code == 401):
-            raise ServerFailureException(response.text)
-
         response_json = json.loads(response.text)
-        
+
+        if (response.status_code == 401):
+            raise NotAuthorizedException(response_json['results'])
+
         if not response.ok and not "results" in response_json:
             raise ServerFailureException(
                 "The server responded at " + self.server_url + " with an unknown error!")
