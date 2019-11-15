@@ -17,7 +17,6 @@ class DeviceCapabilities:
 	"""
     def add_capability(self, name, value):
         self.json_caps[name] = value
-        print (self.json_caps)
     
     def get_capabilities_as_json(self):
         return json.dumps(self.json_caps)

@@ -30,7 +30,7 @@ class Test_RokuTests:
         self.capabilities = DeviceCapabilities()
         self.capabilities.add_capability("Platform", "Roku")
         self.capabilities.add_capability("AppPackage", self.DEMO_APP_URL)
-        self.capabilities.add_capability("DeviceIPAddress", "192.168.1.38")
+        self.capabilities.add_capability("DeviceIPAddress", "192.168.1.43")
         self.capabilities.add_capability("DeviceUsername", "rokudev")
         self.capabilities.add_capability("DevicePassword", "1234")
         self.capabilities.add_capability("OCRType", "Tesseract")
@@ -354,3 +354,52 @@ class Test_RokuTests:
         
         self.roku_driver.remote().send_keys("search for something")
         self.roku_driver.finder().find_element(By().text("search for something"))
+
+    def test_find_multiple_text_elements(self):
+        home = str(Path.home())
+        self.capabilities.add_capability("OCRType", "GoogleVision")
+        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
+        
+        self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+        self.roku_driver.options().set_element_timeout(5000)
+        self.roku_driver.finder().find_element(By().text("SHOWS"))
+
+        self.roku_driver.remote().press_button(RokuButton.OPTION)
+        self.roku_driver.finder().find_element(By().text("SETTINGS"))
+
+        self.roku_driver.remote().press_button(RokuButton.RIGHT_ARROW)
+        self.roku_driver.remote().press_button(RokuButton.SELECT)
+        self.roku_driver.finder().find_element(By().text("Sign in"))
+
+        elements = self.roku_driver.finder().find_elements(By().text("Sign in"))
+        print("elements: " + str(elements))
+        
+        print("element 1 x: " + str(elements[0].get_x()))
+        assert elements[0].get_x() > 350 and elements[0].get_x() < 375
+        print("element 1 y: " + str(elements[0].get_y()))
+        assert elements[0].get_y() > 470 and elements[0].get_y() < 480
+        print("element 1 text: " + str(elements[0].get_text()))
+        assert elements[0].get_text() == "Sign in"
+
+        print("element 2 x: " + str(elements[1].get_x()))
+        assert elements[1].get_x() > 210 and elements[1].get_x() < 220
+        print("element 2 y: " + str(elements[1].get_y()))
+        assert elements[1].get_y() > 540 and elements[1].get_y() < 555
+        print("element 2 text: " + str(elements[1].get_text()))
+        assert elements[1].get_text() == "SIGN IN"
+
+    def test_is_element_present(self):
+        home = str(Path.home())
+        self.capabilities.add_capability("OCRType", "GoogleVision")
+        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
+
+        self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+        self.roku_driver.options().set_element_timeout(5000)
+        self.roku_driver.finder().find_element(By().text("SHOWS"))
+
+        elements = self.roku_driver.finder().find_elements(By().text("SHOWS"))
+        assert len(elements) > 0
+
+        elements = self.roku_driver.finder().find_elements(By().text("no element with this text"))
+        assert len(elements) == 0
+        

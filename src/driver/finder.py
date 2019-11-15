@@ -1,4 +1,4 @@
-
+import json
 import copy
 from src.utils.file_to_string_utils import FileToStringUtils
 from src.driver.element import Element
@@ -54,8 +54,39 @@ class Finder:
         element_json = self.__handler(self.http_client.post_to_server('element', session))
         return Element(element_json)
 
+    """
+	Searches for the existence of a locator within the device screen and
+    will return a collection of all matches. A NoSuchElementException will
+    NOT be thrown if an element is not found.
+	
+	:param by: The locator to search for.
+	:returns: Element - A collection of Element objects containing details about the elements location and contents.
+	"""
+    def find_elements(self, by):
+        by = FileToStringUtils().prepare_locator(by)
+        session = copy.deepcopy(self.session)
+        session['action'] = 'find_all'
+        session['element_locator'] = str(by)
+        element_json = self.__handler(self.http_client.post_to_server('element', session))
+        return self.__get_elements(element_json)
+
     def __handler(self, element_json):
         if element_json['results'] != 'success':
             raise NoSuchElementException(element_json['results'])
         return element_json
+
+    def __get_elements(self, element_json):
+        if not 'all_elements' in element_json.keys():
+            return {}
+
+        element = element_json['all_elements']
+        all_elements = []
+        i = 0
+        count = len(element)
+        while i < count:
+            value = element[i]
+            value['session_id'] = self.session['session_id']
+            all_elements.append(Element(value))
+            i = i + 1
+        return all_elements
 
