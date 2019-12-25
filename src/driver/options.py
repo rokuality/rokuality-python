@@ -1,5 +1,6 @@
 import copy
 from src.exceptions.server_failure_exception import ServerFailureException
+from src.enums.session_status import SessionStatus
 
 class Options:
 
@@ -55,6 +56,33 @@ class Options:
         session['action'] = 'element_polling_interval'
         session['element_polling_interval'] = str(poll_interval_in_milliseconds)
         element_json = self.__handler(self.http_client.post_to_server('settings', session))
+
+    """
+	Sets a session status that can be later retrieved during the course of a session. By default the session status is 'In Progress'.
+	Useful if you want to set a pass/fail/broken status during the course of a test run and then later retrieve the status
+	for communicating with a 3rd party service. The status will last only so long as the session is active and will be lost
+	once the user stops the session.
+	
+    :param status: SessionStatus - the session status.
+	:raises ServerFailureException: If the session status cannot be applied.
+	"""
+    def set_session_status(self, status):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'set_session_status'
+        session['session_status'] = status.value
+        self.__handler(self.http_client.post_to_server('settings', session))
+
+    """
+	Gets the session status.
+	
+    :returns: SessionStatus - the session status as set by the user during the course of the session.
+	:raises ServerFailureException: If the session status cannot be retrieved.
+	"""
+    def get_session_status(self):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'get_session_status'
+        option_json = self.__handler(self.http_client.post_to_server('settings', session))
+        return SessionStatus.from_string(option_json['session_status'])
 
     def __handler(self, element_json):
         if element_json['results'] != 'success':

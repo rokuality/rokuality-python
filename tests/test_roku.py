@@ -4,20 +4,25 @@ from pathlib import Path
 from src.driver.roku.roku_driver import RokuDriver
 from src.driver.device_capabilities import DeviceCapabilities
 from src.driver.by import By
+from src.driver.roku.roku_by import RokuBy
 from src.driver.element import Element
 from src.exceptions.no_such_element_exception import NoSuchElementException
 from src.enums.roku_button import RokuButton
 from src.driver.roku.roku_device_info import RokuDeviceInfo
 from src.driver.screen_size import ScreenSize
 
+
 class Test_RokuTests:
 
     DEMO_APP_URL = "https://rokualitypublic.s3.amazonaws.com/RokualityDemoApp.zip"
-    SERVER_URL = "http://localhost:7777"
+    SERVER_URL = "https://rokualityserver.com?key=538fb667-df98-4d1e-a37d-e9a2b015cc21"
 
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    ROKU_IMAGES_DIR = ROOT_DIR + os.path.sep + "resources" + os.path.sep + "rokuimages" + os.path.sep
-    HELLOW_WORLD_ZIP = ROOT_DIR + os.path.sep + "resources" + os.path.sep + "helloworld.zip"
+    ROKU_IMAGES_DIR = ROOT_DIR + os.path.sep + "resources" + \
+        os.path.sep + "rokuimages" + os.path.sep
+    HELLOW_WORLD_ZIP = ROOT_DIR + os.path.sep + \
+        "resources" + os.path.sep + "helloworld.zip"
+    DEBUG_URL_ZIP = "https://rokualitypublic.s3.amazonaws.com/RokuDebug2.zip"
 
     roku_driver = None
     capabilities = None
@@ -25,7 +30,7 @@ class Test_RokuTests:
     def teardown_method(self):
         if not self.roku_driver is None:
             self.roku_driver.stop()
-        
+
     def setup_method(self):
         self.capabilities = DeviceCapabilities()
         self.capabilities.add_capability("Platform", "Roku")
@@ -34,17 +39,17 @@ class Test_RokuTests:
         self.capabilities.add_capability("DeviceUsername", "rokudev")
         self.capabilities.add_capability("DevicePassword", "1234")
         self.capabilities.add_capability("OCRType", "Tesseract")
-    
+
     def test_install_from_url(self):
         self.capabilities.add_capability("AppPackage", self.DEMO_APP_URL)
-        
+
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         self.roku_driver.finder().find_element(By().text("SHOWS"))
 
     def test_install_from_local_file(self):
         self.capabilities.add_capability("AppPackage", self.HELLOW_WORLD_ZIP)
-        
+
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         self.roku_driver.finder().find_element(By().text("Hello World!"))
@@ -65,7 +70,7 @@ class Test_RokuTests:
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         element = self.roku_driver.finder().find_element(By().text("SHOWS"))
-        
+
         print("element x: " + str(element.get_x()))
         assert element.get_x() > 100 and element.get_x() < 120
 
@@ -85,18 +90,19 @@ class Test_RokuTests:
         assert element.get_confidence() > 85.0
 
         print("element id: " + str(element.get_element_id()))
-        
+
         print("element session id: " + str(element.get_session_id()))
         assert element.get_session_id() == self.roku_driver.get_session_id()
 
     def test_find_element_from_text_with_google_vision(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         element = self.roku_driver.finder().find_element(By().text("SHOWS"))
-        
+
         print("element x: " + str(element.get_x()))
         assert element.get_x() > 100 and element.get_x() < 120
 
@@ -114,20 +120,27 @@ class Test_RokuTests:
 
         '''only relevant for tesseract'''
         print("element confidence: " + str(element.get_confidence()))
-        assert element.get_confidence() == 0.0 
+        assert element.get_confidence() == 0.0
 
         print("element id: " + str(element.get_element_id()))
-        
+
         print("element session id: " + str(element.get_session_id()))
         assert element.get_session_id() == self.roku_driver.get_session_id()
+
+    def test_find_element_webdriver(self):
+        home = str(Path.home())
+        self.capabilities.add_capability("AppPackage", self.DEBUG_URL_ZIP)
+        self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+        self.roku_driver.options().set_element_timeout(15000)
+        element = self.roku_driver.finder().find_element(RokuBy().text("VIEW MORE"))
 
     def test_find_element_from_image(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
 
-        for by in { By().image(self.ROKU_IMAGES_DIR + "shows.png"), By().image("https://dl.dropboxusercontent.com/s/jfywmqqnsndgki8/shows.png") }:
+        for by in {By().image(self.ROKU_IMAGES_DIR + "shows.png"), By().image("https://dl.dropboxusercontent.com/s/jfywmqqnsndgki8/shows.png")}:
             element = self.roku_driver.finder().find_element(by)
-        
+
             print("element x: " + str(element.get_x()))
             assert element.get_x() > 100 and element.get_x() < 120
 
@@ -144,52 +157,57 @@ class Test_RokuTests:
             assert element.get_confidence() > 0.90
 
             print("element id: " + str(element.get_element_id()))
-        
+
             print("element session id: " + str(element.get_session_id()))
             assert element.get_session_id() == self.roku_driver.get_session_id()
 
     def test_element_not_found_in_text_tesseract(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
-        
+
         success = False
         try:
             self.roku_driver.finder().find_element(By().text("not found"))
         except NoSuchElementException as e:
             print(str(e))
-            success = str(e).__contains__("Failed to find text element on the device screen")
-        
+            success = str(e).__contains__(
+                "Failed to find text element on the device screen")
+
         assert success
 
     def test_element_not_found_in_text_google_vision(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
-        
+
         success = False
         try:
             self.roku_driver.finder().find_element(By().text("not found"))
         except NoSuchElementException as e:
             print(str(e))
-            success = str(e).__contains__("Failed to find text element on the device screen")
-        
+            success = str(e).__contains__(
+                "Failed to find text element on the device screen")
+
         assert success
 
     def test_element_not_found_in_image(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
-        
+
         success = False
         try:
-            self.roku_driver.finder().find_element(By().image(self.ROKU_IMAGES_DIR + "helloworld.png"))
+            self.roku_driver.finder().find_element(
+                By().image(self.ROKU_IMAGES_DIR + "helloworld.png"))
         except NoSuchElementException as e:
             print(str(e))
-            success = str(e).__contains__("Failed to find image element on the device screen")
-        
+            success = str(e).__contains__(
+                "Failed to find image element on the device screen")
+
         assert success
 
     def test_element_set_timeout(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
-        
+
         self.roku_driver.options().set_element_timeout(5000)
         self.roku_driver.options().set_element_poll_interval(500)
         start_time = time.time()
@@ -198,44 +216,48 @@ class Test_RokuTests:
             self.roku_driver.finder().find_element(By().text("not here"))
         except NoSuchElementException as e:
             print(str(e))
-            success = str(e).__contains__("Failed to find text element on the device screen")
-        
+            success = str(e).__contains__(
+                "Failed to find text element on the device screen")
+
         assert success
         end_time = time.time()
         time_dif_seconds = end_time - start_time
         print("time difference in seconds " + str(time_dif_seconds))
-        success = time_dif_seconds >= 5 and time_dif_seconds <=10
+        success = time_dif_seconds >= 5 and time_dif_seconds <= 10
         assert success
 
     def test_element_set_image_match_similarity(self):
         self.capabilities.add_capability("AppPackage", self.HELLOW_WORLD_ZIP)
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
-        
+
         self.roku_driver.options().set_image_match_similarity(0.10)
-        self.roku_driver.finder().find_element(By().image(self.ROKU_IMAGES_DIR + "shows.png"))
+        self.roku_driver.finder().find_element(
+            By().image(self.ROKU_IMAGES_DIR + "shows.png"))
 
         self.roku_driver.options().set_image_match_similarity(0.99)
         success = False
         try:
-            self.roku_driver.finder().find_element(By().image(self.ROKU_IMAGES_DIR + "shows.png"))
+            self.roku_driver.finder().find_element(
+                By().image(self.ROKU_IMAGES_DIR + "shows.png"))
         except NoSuchElementException as e:
-            success = str(e).__contains__("Failed to find image element on the device screen")
-        
+            success = str(e).__contains__(
+                "Failed to find image element on the device screen")
+
         assert success
 
     def test_find_element_in_sub_screen(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
 
-        for by in { By().image(self.ROKU_IMAGES_DIR + "shows.png"), By().text("SHOWS") }:
+        for by in {By().image(self.ROKU_IMAGES_DIR + "shows.png"), By().text("SHOWS")}:
             element = self.roku_driver.finder().find_element_sub_screen(by, 100, 500, 300, 200)
-    
+
         success = False
         try:
             self.roku_driver.finder().find_element_sub_screen(by, 1, 1, 100, 500)
         except NoSuchElementException as e:
             success = str(e).__contains__("Failed to find")
-        
+
         assert success
 
     def test_remote_control(self):
@@ -254,7 +276,7 @@ class Test_RokuTests:
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         roku_device_info = self.roku_driver.info().get_device_info()
         assert roku_device_info.get_vendor_name() == "Roku"
-    
+
     def test_get_screen_text_tesseract(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
@@ -280,8 +302,9 @@ class Test_RokuTests:
 
         screen_texts = self.roku_driver.screen().get_text_sub_screen(1, 1, 500, 500)
         assert len(screen_texts) > 1
-        
-        text_as_string_sub_screen = self.roku_driver.screen().get_text_as_string_sub_screen(1, 1, 500, 500)
+
+        text_as_string_sub_screen = self.roku_driver.screen(
+        ).get_text_as_string_sub_screen(1, 1, 500, 500)
         assert not "SHOWS" in text_as_string_sub_screen
 
         text_as_string = self.roku_driver.screen().get_text_as_string()
@@ -291,8 +314,9 @@ class Test_RokuTests:
     def test_get_screen_text_google_vision(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
-        
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
+
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         self.roku_driver.finder().find_element(By().text("SHOWS"))
@@ -341,8 +365,9 @@ class Test_RokuTests:
     def test_send_keys(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
-        
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
+
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
 
         self.roku_driver.options().set_element_timeout(5000)
@@ -351,15 +376,16 @@ class Test_RokuTests:
         self.roku_driver.finder().find_element(By().text("LEGAL"))
         self.roku_driver.remote().press_button(RokuButton.SELECT)
         self.roku_driver.finder().find_element(By().text("123"))
-        
+
         self.roku_driver.remote().send_keys("search for something")
         self.roku_driver.finder().find_element(By().text("search for something"))
 
     def test_find_multiple_text_elements(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
-        
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
+
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
         self.roku_driver.finder().find_element(By().text("SHOWS"))
@@ -373,7 +399,7 @@ class Test_RokuTests:
 
         elements = self.roku_driver.finder().find_elements(By().text("Sign in"))
         print("elements: " + str(elements))
-        
+
         print("element 1 x: " + str(elements[0].get_x()))
         assert elements[0].get_x() > 350 and elements[0].get_x() < 375
         print("element 1 y: " + str(elements[0].get_y()))
@@ -391,7 +417,8 @@ class Test_RokuTests:
     def test_is_element_present(self):
         home = str(Path.home())
         self.capabilities.add_capability("OCRType", "GoogleVision")
-        self.capabilities.add_capability("GoogleCredentials", home + os.path.sep + "Service.json")
+        self.capabilities.add_capability(
+            "GoogleCredentials", home + os.path.sep + "Service.json")
 
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         self.roku_driver.options().set_element_timeout(5000)
@@ -400,6 +427,6 @@ class Test_RokuTests:
         elements = self.roku_driver.finder().find_elements(By().text("SHOWS"))
         assert len(elements) > 0
 
-        elements = self.roku_driver.finder().find_elements(By().text("no element with this text"))
+        elements = self.roku_driver.finder().find_elements(
+            By().text("no element with this text"))
         assert len(elements) == 0
-        
