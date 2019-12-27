@@ -11,7 +11,7 @@ class RokuBy(By):
 	"""
 
     def text(self, text):
-        return "By.Text: " + text
+        return "RokuBy.Text: " + text
 
     """
 	Constructs an attribute/value based locator to search for within the the device screen.
@@ -22,7 +22,7 @@ class RokuBy(By):
 	"""
 
     def attribute(self, attribute, value):
-        return "By.Attribute: " + attribute + "::::::::" + value
+        return "RokuBy.Attribute: " + attribute + "::::::::" + value
 
     """
 	Constructs an attribute/value based locator to search for within the the device screen.
@@ -32,4 +32,4 @@ class RokuBy(By):
 	"""
 
     def tag(self, tag):
-        return "By.Tag: " + tag
+        return "RokuBy.Tag: " + tag

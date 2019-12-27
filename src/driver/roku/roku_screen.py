@@ -2,6 +2,7 @@ import json
 import copy
 from src.exceptions.screen_exception import ScreenException
 from src.driver.element import Element
+from src.driver.screen import Screen
 
 class RokuScreen(Screen):
     pass

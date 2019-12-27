@@ -82,7 +82,7 @@ class Options:
         session = copy.deepcopy(self.session)
         session['action'] = 'get_session_status'
         option_json = self.__handler(self.http_client.post_to_server('settings', session))
-        return SessionStatus.from_string(option_json['session_status'])
+        return option_json['session_status']
 
     def __handler(self, element_json):
         if element_json['results'] != 'success':

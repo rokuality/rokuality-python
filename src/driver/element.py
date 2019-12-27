@@ -11,14 +11,15 @@ class Element:
     element_id = None
 
     def __init__(self, element_json):
-        self.element_x = element_json["element_x"]
+        self.element_x = element_json['element_x']
         self.element_y = element_json["element_y"]
-        self.element_width = int(element_json["element_width"])
-        self.element_height = int(element_json["element_height"])
-        self.element_confidence = element_json["element_confidence"]
-        self.element_text = element_json["element_text"]
-        self.session_id = element_json["session_id"]
-        self.element_id = element_json["element_id"]
+        self.element_width = int(element_json['element_width'])
+        self.element_height = int(element_json['element_height'])
+        self.element_confidence = element_json['element_confidence']
+        self.element_text = element_json['element_text']
+        if 'session_id' in element_json:
+            self.session_id = element_json['session_id']
+        self.element_id = element_json['element_id']
 
     """
 	Gets the session id that the element belongs to.
