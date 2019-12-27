@@ -7,7 +7,7 @@ from src.exceptions.session_not_started_exception import SessionNotStartedExcept
 from src.driver.options import Options
 from src.driver.roku.roku_remote import RokuRemote
 from src.driver.roku.roku_info import RokuInfo
-from src.driver.screen import Screen
+from src.driver.roku.roku_screen import RokuScreen
 
 class RokuDriver(BaseDriver):
     pass
@@ -69,10 +69,10 @@ class RokuDriver(BaseDriver):
     """
 	Initiates the Screen for getting information and artifacts from the device screen.
 	
-	:returns: Screen
+	:returns: RokuScreen
 	"""
     def screen(self):
-        return Screen(self.http_client, super().get_session())
+        return RokuScreen(self.http_client, super().get_session())
 
     """
 	Initiates Options for various driver and finder settings.

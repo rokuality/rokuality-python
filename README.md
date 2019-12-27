@@ -12,7 +12,7 @@ To use Rokuality in your tests or application, install the `rokuality-python` de
 ```
 
 ### Getting started: Roku
-See the [Getting Started: Roku](https://github.com/rokuality/rokuality-server) section for details about preparing your Roku device for test.
+See the [Getting Started: Roku](https://github.com/rokuality/rokuality-server) section for details about preparing your Roku device for test. The Rokuality framework is one of the first projects to provide support for the [Roku WebDriver API](https://github.com/rokudev/automated-channel-testing).
 
 ### Getting started: XBox
 See the [Getting Started: XBox](https://github.com/rokuality/rokuality-server) section for details about preparing your XBox device for test.
@@ -37,7 +37,7 @@ The Rokuality bindings operate via Image Based Object Recognition and OCR techni
 This will take care of installing/launching your device app package (if Roku or XBox), ensure the device is available and ready for test, and start a dedicated session on your device as indicated via your DeviceCapabilities object. See [Device Capabilities](#device-capabilities-explained) for an explanation of what capabilities are available for your driver startup.
 
 #### Finding elements:
-There are two primary ways of finding elements on your device:
+There are two primary ways of finding elements on your device that are available for all device types:
 
 1) TEXT
 ```python
@@ -59,12 +59,20 @@ OR
 ```
 In this example, you can provide a url to your locator image snippet and the server will download that image and evaluate it against the device screen. Useful for those more dynamic testing situations where you may want to query your application feeds to get the dynamic app images for evaluation, or if you want to keep your image based locators in a remote repository.
 
+#### Finding elements with Roku WebDriver:
+Optionally when testing on Roku you can provide the following native based locator types:
+```oython
+    element_by_text = roku_driver.finder().find_element(RokuBy().text('text to search for'))
+    element_by_tag = roku_driver.finder().find_element(RokuBy().tag('tag'))
+    element_by_attribute = roku_driver.finder().find_element(RokuBy().attribute('attribute', 'attribute value'))
+```
+
 #### Finding multi match elements:
 You can search for multiple element matches from a singular locator and return the results of match to an Element collection as follows:
 ```python
     elements = driver.finder().find_elements(By().text("locator that will return multiple matches"))
 ```
-When using `find_lements`, a NoSuchElementException will NOT be thrown to the user in the event that an element is not found. In that event the collection will be empty. So this method can be used to determine if an element is present or not:
+When using `find_elements`, a NoSuchElementException will NOT be thrown to the user in the event that an element is not found. In that event the collection will be empty. So this method can be used to determine if an element is present or not:
 
 ```python
     elements = driver.finder().find_elements(By().text("locator"))

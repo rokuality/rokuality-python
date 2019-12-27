@@ -1,3 +1,7 @@
+1.2.1 - Changes from 1.2.0
+1. Adds support for RokuWebdriver. Includes native Roku support for text/tag/attribute in addition to a new RokuMediaInfo api. See Readme for details. Requires Rokuality Server version 1.2.4
+2. Adds the ability to set/get a session status during the course of an execution
+
 1.2.0 - Changes from 1.1.0
 1. Adds support for multiple element finds via driver.finder().find_elements. See the readme documentation for details.
 

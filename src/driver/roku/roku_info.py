@@ -1,6 +1,7 @@
 import copy
 from src.exceptions.server_failure_exception import ServerFailureException
 from src.driver.roku.roku_device_info import RokuDeviceInfo
+from src.driver.roku.roku_media_player_info import RokuMediaPlayerInfo
 
 class RokuInfo():
     session = None
@@ -20,6 +21,17 @@ class RokuInfo():
         session['action'] = 'device_info'
         device_info_json = self.__handler(self.http_client.post_to_server('info', session))
         return RokuDeviceInfo(device_info_json)
+    
+    """
+	Gets info about the Roku media player under test including buffering information, the player state, player errors, etc.
+	
+	:returns: RokuMediaPlayerInfo - Various information about the device media player under test.
+	"""
+    def get_media_player_info(self):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'media_player_info'
+        media_info_json = self.__handler(self.http_client.post_to_server('info', session))
+        return RokuMediaPlayerInfo(media_info_json)
 
     def __handler(self, element_json):
         if element_json['results'] != 'success':
