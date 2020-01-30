@@ -2,6 +2,10 @@
 
 The Rokuality platform allows you to distribute Roku, XBox, PS4, and Cable SetTop Box end to end tests across multiple devices on your network. The project goal is to provide a no cost/low cost open source solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Clone and start the [Rokuality Server](https://github.com/rokuality/rokuality-server), and start writing tests!
 
+### Your Roku tests in the cloud!
+
+Access the [Rokuality Device Cloud](https://www.rokuality.com/) to run your Roku tests in a CI/CD fashion from anywhere in the world! Get access to all the popular Roku streaming devices for both automated and live device test sessions on the world's first Roku Webdriver device cloud. Your [device portal](https://www.rokuality.com/device-portal-and-site-services) will allow you to review your test history, manage your test teams, review run results, and more! Our [detailed documentation](https://www.rokuality.com/roku-automation) will get you and your team up and running quickly. Start a [free trial](https://www.rokuality.com/plans-pricing) today and get started!
+
 ### Getting started: Get the Server
 Clone/Download and start the [Rokuality Server](https://github.com/rokuality/rokuality-server) which acts as a lightweight web server proxy for your test traffic. The server does all the 'heavy lifting' on the backend.
 
@@ -145,6 +149,9 @@ Various methods exist for getting screen artifacts such as the screen image, sub
        note that the screen recordings are created by stitching the collected device screenshots
        together and video quality won't be the best"""
     driver.screen().get_recording()
+
+    '''get the xml page source of the channel. useful for debugging Roku Webdriver locators'''
+    xml_source = driver.screen().get_page_source()
 ```
 
 #### Getting screen text:
@@ -160,6 +167,16 @@ Screen text of the device is returned as a collection of ScreenText objects as f
 ```
 
 Alternatively you can get the entire device screen as a full string via `driver.screen().get_text_as_string()`
+
+#### Getting information about the media player (ROKU ONLY):
+For Roku devices, it's possible to get details about your media player in flight through the Roku WebDriver rest api which can be accessed in your test code as follows:
+```python
+    '''gets information about the media in flight including state, bitrate, encoding information, and much much more!'''
+    media_player_info = self.roku_driver.info().get_media_player_info()
+    assert media_player_info.is_error() == False
+    assert media_player_info.is_live() == False
+    assert media_player_info.get_state() == 'none'
+```
 
 #### Device Capabilities explained:
 Various capabilities and values can be provided and passed to your driver instance at startup. Some of them are required and others are optional. The following are the minimum capabilities **required** to start a driver session.
