@@ -33,6 +33,17 @@ class RokuInfo():
         media_info_json = self.__handler(self.http_client.post_to_server('info', session))
         return RokuMediaPlayerInfo(media_info_json)
 
+    """
+	Gets the Roku debugger logs from session start to now.
+	
+	:returns: String - The Roku debugger logs.
+	"""
+    def get_debug_logs(self):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'get_debug_logs'
+        log_json = self.__handler(self.http_client.post_to_server('info', session))
+        return log_json['log_content']
+
     def __handler(self, element_json):
         if element_json['results'] != 'success':
             raise ServerFailureException(element_json['results'])

@@ -4,7 +4,7 @@ from src.driver.device_capabilities import DeviceCapabilities
 from src.driver.base_driver import BaseDriver
 from src.driver.finder import Finder
 from src.exceptions.session_not_started_exception import SessionNotStartedException
-from src.driver.options import Options
+from src.driver.roku.roku_options import RokuOptions
 from src.driver.roku.roku_remote import RokuRemote
 from src.driver.roku.roku_info import RokuInfo
 from src.driver.roku.roku_screen import RokuScreen
@@ -77,10 +77,10 @@ class RokuDriver(BaseDriver):
     """
 	Initiates Options for various driver and finder settings.
 	
-	:returns: Options
+	:returns: RokuOptions
 	"""
     def options(self):
-        return Options(self.http_client, super().get_session())
+        return RokuOptions(self.http_client, super().get_session())
 
     """
 	Gets the session id of the device under test.
