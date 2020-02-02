@@ -178,6 +178,12 @@ For Roku devices, it's possible to get details about your media player in flight
     assert media_player_info.get_state() == 'none'
 ```
 
+#### Getting debug log info (ROKU ONLY):
+For Roku devices, it's possible to get the debug logs as follows:
+```python
+    log_content = self.driver.info().get_debug_logs()
+```
+
 #### Device Capabilities explained:
 Various capabilities and values can be provided and passed to your driver instance at startup. Some of them are required and others are optional. The following are the minimum capabilities **required** to start a driver session.
 

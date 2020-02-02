@@ -501,3 +501,16 @@ class Test_RokuTests:
         self.roku_driver.options().set_session_status(SessionStatus.FAILED)
         session_status = self.roku_driver.options().get_session_status()
         assert session_status == SessionStatus.FAILED.value
+
+    def test_get_debug_logs(self):
+        self.capabilities.add_capability('AppPackage', self.DEBUG_URL_ZIP)
+        self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+
+        self.roku_driver.options().set_element_timeout(15000)
+        self.roku_driver.finder().find_element(RokuBy().text('VIEW MORE'))
+
+        log_content = self.roku_driver.info().get_debug_logs()
+        success = str(log_content.lower()).__contains__(
+                'bet')
+
+        assert success
