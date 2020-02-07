@@ -30,8 +30,12 @@ class Test_XBoxTests:
         self.capabilities.add_capability("Platform", "XBox")
         self.capabilities.add_capability("AppPackage", self.DEMO_APP_URL)
         self.capabilities.add_capability("DeviceIPAddress", "192.168.1.36")
-        self.capabilities.add_capability("DeviceName", "XboxOne")
-        self.capabilities.add_capability("HomeHubIPAddress", "192.168.1.41")
+        self.capabilities.add_capability("DeviceUsername", "your_xbox_live_username")
+        self.capabilities.add_capability("DevicePassword", "your_xbox_live_password")
+        self.capabilities.add_capability("DeviceID", "your_xbox_live_console_id")
+
+        self.capabilities.add_capability("MirrorScreen", "1200x800")
+
         self.capabilities.add_capability("AppPackage", self.DEMO_APP_URL)
         self.capabilities.add_capability("App", "MTV")
         home = str(Path.home())
@@ -254,6 +258,23 @@ class Test_XBoxTests:
         screen_recording = self.xbox_driver.screen().get_recording()
         print(screen_recording)
         assert os.path.exists(screen_recording)
+    
+    def test_send_keys(self):
+        self.xbox_driver = XBoxDriver(self.SERVER_URL, self.capabilities)
+        self.xbox_driver.options().set_element_timeout(15000)
+        self.xbox_driver.options().set_remote_interact_delay(2000)
+
+        self.xbox_driver.finder().find_element(By().text("featured"))
+        self.xbox_driver.remote().press_button(XBoxButton.UP_ARROW)
+        self.xbox_driver.remote().press_button(XBoxButton.RIGHT_ARROW)
+        self.xbox_driver.remote().press_button(XBoxButton.RIGHT_ARROW)
+        self.xbox_driver.remote().press_button(XBoxButton.A)
+        self.xbox_driver.finder().find_element(By().text("search"))
+        self.xbox_driver.remote().press_button(XBoxButton.DOWN_ARROW)
+        self.xbox_driver.remote().press_button(XBoxButton.A)
+        
+        self.xbox_driver.remote().send_keys("catfish")
+        self.xbox_driver.finder().find_element(By().text("catfish"))
 
     def __get_demo_app(self):
         home = str(Path.home())
