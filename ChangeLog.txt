@@ -1,6 +1,6 @@
-1.2.3 - Changes from 1.2.2 (IN PROGRESS)
+1.2.3 - Changes from 1.2.2
 1. Adds the ability for users to set a remote interact delay which is a pause in between all remote interactions to help slow down remote control interactions and prevent test flake.
-2. Adds a new remote().send_keys method for sending a literal string of text characters to the XBox virtual keyboard.
+2. Adds a new remote().send_keys method for sending a literal string of text characters to the XBox virtual keyboard. (requires Rokuality Server v 1.2.7 or higher)
 3. Updates the XBox readme and capability docs for the removal of the legacy harmony requirement as we now use the openxbox smartglass rest server for XBox remote control on the back end.
 
 1.2.2 - Changes from 1.2.1
