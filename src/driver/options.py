@@ -44,6 +44,21 @@ class Options:
         element_json = self.__handler(self.http_client.post_to_server('settings', session))
 
     """
+	Sets a dely in milliseconds for remote control interactions. By default there is no pause between 
+	remote control commands so remote interactions can happen very fast and may lead to test flake 
+	depending on the test scenario. This option allows you to throttle those remote control commands.
+	It will last for the duration of the driver session, or until a new value is set.
+	
+	:param delay_in_milliseconds: long - The pause between remote commands in milliseconds. i.e. '1000'.
+	:raises ServerFailureException: If the interact delay cannot be applied.
+	"""
+    def set_remote_interact_delay(self, delay_in_milliseconds):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'remote_interact_delay'
+        session['remote_interact_delay'] = str(delay_in_milliseconds)
+        element_json = self.__handler(self.http_client.post_to_server('settings', session))
+
+    """
 	Sets a poll interval for all elements in milliseconds. It will last for the duration
 	of the driver session, or until a new value is set. Only applicable if an element timeout has been applied. By
 	default the element poll interval is 250 milliseconds.

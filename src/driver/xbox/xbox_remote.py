@@ -23,6 +23,20 @@ class XBoxRemote():
         session['action'] = 'press_button'
         session['remote_button'] = button.value
         self.__handler(self.http_client.post_to_server('remote', session))
+    
+    """
+	Sends a literal string of text to the device. Only relevant if you are interacting with a XBox text input
+    and the XBox virtual keyboard is visible on the screen.
+
+	:param text_to_type String - The text you wish to type into the input field.
+	
+	:raises RemoteInteractException: If the input fails to be sent.
+	"""
+    def send_keys(self, text_to_type):
+        session = copy.deepcopy(self.session)
+        session['action'] = 'send_keys'
+        session['text'] = text_to_type
+        self.__handler(self.http_client.post_to_server('remote', session))
 
     def __handler(self, element_json):
         if element_json['results'] != 'success':
