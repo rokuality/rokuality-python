@@ -24,7 +24,8 @@ class BaseDriver:
         prepared_json = {}
         parsed_json = json.loads(capabilities)
         for key,value in parsed_json.items():
-                if os.path.exists(value):
+                is_string = isinstance(value, str)
+                if is_string and os.path.exists(value):
                     encoded_data = FileToStringUtils().convert_file_to_base64_string(value)
                     prepared_json[key] = str(encoded_data)
                 else:

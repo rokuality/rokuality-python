@@ -139,13 +139,13 @@ class Test_RokuTests:
         assert element_by_tag.get_x() == 0
         assert element_by_tag.get_y() == 0
         assert element_by_tag.get_width() == 663
-        assert element_by_tag.get_height() == 77
+        assert element_by_tag.get_height() == 151
         
-        element_by_attribute = self.roku_driver.finder().find_element(RokuBy().attribute('bounds', '{0, 0, 663, 77}'))
+        element_by_attribute = self.roku_driver.finder().find_element(RokuBy().attribute('bounds', '{0, 0, 663, 151}'))
         assert element_by_tag.get_x() == 0
         assert element_by_tag.get_y() == 0
         assert element_by_tag.get_width() == 663
-        assert element_by_tag.get_height() == 77
+        assert element_by_tag.get_height() == 151
 
     def test_find_element_from_image(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
@@ -514,3 +514,16 @@ class Test_RokuTests:
                 'bet')
 
         assert success
+
+    def test_get_performance_profile(self):
+        self.capabilities.add_capability('EnablePerformanceProfiling', True)
+        self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+
+        time.sleep(10)
+
+        performance_profile = self.roku_driver.info().get_performance_profile()
+        performance_profile_mb = os.path.getsize(performance_profile) / 1000000
+        print("Performance profile MB size: " + str(performance_profile_mb))
+        assert os.path.exists(performance_profile) and performance_profile_mb >= 2
+
+        
