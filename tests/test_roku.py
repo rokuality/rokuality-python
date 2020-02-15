@@ -288,7 +288,9 @@ class Test_RokuTests:
     def test_device_info(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
         roku_device_info = self.roku_driver.info().get_device_info()
-        assert roku_device_info.get_vendor_name() == 'Roku'
+        assert 'vendor-name' in roku_device_info.get_device_info()
+        assert roku_device_info.get_device_info_attribute('vendor-name') == 'Roku'
+        assert roku_device_info.get_device_info_attribute('search-channels-enabled') == True
 
     def test_get_screen_text_tesseract(self):
         self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)

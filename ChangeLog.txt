@@ -1,3 +1,6 @@
+1.2.5 - Changes from 1.2.4
+1. Fixes an issue with getting Roku device info that was causing test failures based on the type of Roku device. Roku device info can now be retrieved via driver.info().get_device_info() which will return a collection of all the name/value Roku info data. Alternatively you get a specific value by providing the info attribute name you are looking for such as driver.info().get_device_info().get_device_info_attribute('search-channels-enabled')
+
 1.2.4 - Changes from 1.2.3
 1. Adds the ability to get the Roku .bsprof performance profile for monitoring CPU and memory utilization during test via roku_driver.info().get_performance_profile()
 
