@@ -210,9 +210,9 @@ For Roku devices, it's possible to get the debug logs as follows:
 It's possible to test your Roku deep links by providing the `ContentID` and `MediaType` capabilities for the deep like you wish to launch. Upon session start the channel should be launched with the deep link content already loaded. If the deep link fails to load a `SessionNotStartedException` will be thrown with details.
 
 ```python
-    capabilities = DeviceCapabilities();
-    capabilities.add_capability("ContentID", "idofcontent");
-    capabilities.add_capability("MediaType", "mediatypeofcontent");
+    capabilities = DeviceCapabilities()
+    capabilities.add_capability('ContentID', 'idofcontent')
+    capabilities.add_capability('MediaType', 'mediatypeofcontent')
     driver = RokuDriver(SERVER_URL, capabilities)
 
     '''the application should be launched with the deep link content loaded'''
