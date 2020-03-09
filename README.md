@@ -2,9 +2,9 @@
 
 The Rokuality platform allows you to distribute Roku, XBox, PS4, and Cable SetTop Box end to end tests across multiple devices on your network. The project goal is to provide a no cost/low cost open source solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Clone and start the [Rokuality Server](https://github.com/rokuality/rokuality-server), and start writing tests!
 
-### Your Roku tests in the cloud!
+### Your Roku and XBox tests in the cloud!
 
-Access the [Rokuality Device Cloud](https://www.rokuality.com/) to run your Roku tests in a CI/CD fashion from anywhere in the world! Get access to all the popular Roku streaming devices for both automated and live device test sessions on the world's first Roku Webdriver device cloud. Your [device portal](https://www.rokuality.com/device-portal-and-site-services) will allow you to review your test history, manage your test teams, review run results, and more! Our [detailed documentation](https://www.rokuality.com/roku-automation) will get you and your team up and running quickly. Start a [free trial](https://www.rokuality.com/plans-pricing) today and get started!
+Access the [Rokuality Device Cloud](https://www.rokuality.com/) to run your Roku and XBox One tests in a CI/CD fashion from anywhere in the world! Get access to all the popular Roku streaming devices and XBox One devices for both automated and live device test sessions on the world's first Roku and XBox Webdriver device cloud. Your [device portal](https://www.rokuality.com/device-portal-and-site-services) will allow you to review your test history, manage your test teams, review run results, and more! Our [detailed documentation](https://www.rokuality.com/documentation) will get you and your team up and running quickly. Start a [free trial](https://www.rokuality.com/plans-pricing) today and get started!
 
 ### Getting started: Get the Server
 Clone/Download and start the [Rokuality Server](https://github.com/rokuality/rokuality-server) which acts as a lightweight web server proxy for your test traffic. The server does all the 'heavy lifting' on the backend.
@@ -206,6 +206,18 @@ For Roku devices, it's possible to get the debug logs as follows:
     log_content = self.driver.info().get_debug_logs()
 ```
 
+#### Testing Deep Links (ROKU ONLY):
+It's possible to test your Roku deep links by providing the `ContentID` and `MediaType` capabilities for the deep like you wish to launch. Upon session start the channel should be launched with the deep link content already loaded. If the deep link fails to load a `SessionNotStartedException` will be thrown with details.
+
+```python
+    capabilities = DeviceCapabilities()
+    capabilities.add_capability('ContentID', 'idofcontent')
+    capabilities.add_capability('MediaType', 'mediatypeofcontent')
+    driver = RokuDriver(SERVER_URL, capabilities)
+
+    '''the application should be launched with the deep link content loaded'''
+```
+
 #### Device Capabilities explained:
 Various capabilities and values can be provided and passed to your driver instance at startup. Some of them are required and others are optional. The following are the minimum capabilities **required** to start a driver session.
 
@@ -314,6 +326,10 @@ Various capabilities and values can be provided and passed to your driver instan
 | AudioCaptureInput | The name of your video card capture audio input if running an HDMI connected test. Will vary by the type of hdmi capture card. | Required for HDMI device types (Playstation, Cable SetTop Box, AndroidTV, AppleTV, etc. Optional for Roku if you wish to test a production channel. Ignored for XBox | Can be found by running a terminal command. For MAC: `~/Rokuality/dependencies/ffmpeg_v4.1 -f avfoundation -list_devices true -i ""` and for Windows: `~\Rokuality\dependencies\ffmpeg_win_v4.1\bin\ffmpeg.exe -list_devices true -f dshow -i dummy` |
 | MirrorScreen | If provided with a widthxheight value, then a window will be launched on the user's desktop showing the test activity in real time for the duration of the test session. Useful for debugging tests on remote devices.  | Optional | String - 'widthxheight' format. i.e. '1200x800' will launch a screen mirror with width 1200, and height 800. |
 | EnablePerformanceProfiling | Roku only. If provided your sideloadable .zip package will be updated for performance profiling. Then during the course of the execution you can retrieve the .bsprof file with CPU and memory utilization data from your channel.  | Optional | Boolean - true to allow for performance capturing. Defaults to false. |
+| ContentID | Roku only. A content id of a Roku deep link to load on session start.  | Optional - If provided you must also provide the 'MediaType' capability. | String |
+| MediaType | Roku only. The media type of a Roku deep link to load on session start.  | Optional - If provided you must also provide the 'ContentID' capability. | String |
+| AppPackageType | XBox only. Used if AppPackage is provided and indicates if the package is a 'appx' or 'appxbundle'.  | Optional - Valid values are 'appx' or 'appxbundle'. If this cap is not provided we assume the provided package is an 'appxbundle'. | String |
+| XBoxServerPort | XBox only. Allows you to specifiy the port used for the openxbox server used for various underlying XBox automation tasks such as remote control input. If not provided defaults to port 5557. If you want to test multiple XBox devices concurrently, provide this capability with a unique port for each XBox device you wish to connect to.  | Optional - defaults to port 5557 if not provided. | Integer |
 
 #### Element Timeouts and Polling:
 There are two main options when it comes to element timeouts and polling
