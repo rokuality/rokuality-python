@@ -2,9 +2,9 @@
 
 The Rokuality platform allows you to distribute Roku, XBox, PS4, and Cable SetTop Box end to end tests across multiple devices on your network. The project goal is to provide a no cost/low cost open source solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Clone and start the [Rokuality Server](https://github.com/rokuality/rokuality-server), and start writing tests!
 
-### Your Roku tests in the cloud!
+### Your Roku and XBox tests in the cloud!
 
-Access the [Rokuality Device Cloud](https://www.rokuality.com/) to run your Roku tests in a CI/CD fashion from anywhere in the world! Get access to all the popular Roku streaming devices for both automated and live device test sessions on the world's first Roku Webdriver device cloud. Your [device portal](https://www.rokuality.com/device-portal-and-site-services) will allow you to review your test history, manage your test teams, review run results, and more! Our [detailed documentation](https://www.rokuality.com/roku-automation) will get you and your team up and running quickly. Start a [free trial](https://www.rokuality.com/plans-pricing) today and get started!
+Access the [Rokuality Device Cloud](https://www.rokuality.com/) to run your Roku and XBox One tests in a CI/CD fashion from anywhere in the world! Get access to all the popular Roku streaming devices and XBox One devices for both automated and live device test sessions on the world's first Roku and XBox Webdriver device cloud. Your [device portal](https://www.rokuality.com/device-portal-and-site-services) will allow you to review your test history, manage your test teams, review run results, and more! Our [detailed documentation](https://www.rokuality.com/documentation) will get you and your team up and running quickly. Start a [free trial](https://www.rokuality.com/plans-pricing) today and get started!
 
 ### Getting started: Get the Server
 Clone/Download and start the [Rokuality Server](https://github.com/rokuality/rokuality-server) which acts as a lightweight web server proxy for your test traffic. The server does all the 'heavy lifting' on the backend.
@@ -204,6 +204,18 @@ Once you've retrieved your .bsprof file during test - this file can be uploaded 
 For Roku devices, it's possible to get the debug logs as follows:
 ```python
     log_content = self.driver.info().get_debug_logs()
+```
+
+#### Testing Deep Links (ROKU ONLY):
+It's possible to test your Roku deep links by providing the `ContentID` and `MediaType` capabilities for the deep like you wish to launch. Upon session start the channel should be launched with the deep link content already loaded. If the deep link fails to load a `SessionNotStartedException` will be thrown with details.
+
+```python
+    capabilities = DeviceCapabilities();
+    capabilities.add_capability("ContentID", "idofcontent");
+    capabilities.add_capability("MediaType", "mediatypeofcontent");
+    driver = RokuDriver(SERVER_URL, capabilities)
+
+    '''the application should be launched with the deep link content loaded'''
 ```
 
 #### Device Capabilities explained:

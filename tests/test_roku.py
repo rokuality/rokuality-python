@@ -528,4 +528,16 @@ class Test_RokuTests:
         print("Performance profile MB size: " + str(performance_profile_mb))
         assert os.path.exists(performance_profile) and performance_profile_mb >= 2
 
+    def test_deep_link(self) {
+		self.capabilities.add_capability('AppPackage', 'https://rokualitypublic.s3.amazonaws.com/deep-linking-example.zip')
+		self.capabilities.add_capability('ContentID', '2c4e8ea1ad2f4a8d9d244f5dd4cc47b6')
+		self.capabilities.add_capability('MediaType', 'movie')
+		self.roku_driver = RokuDriver(self.SERVER_URL, self.capabilities)
+
+        time.sleep(10)
+        media_player_info = self.roku_driver.info().get_media_player_info()
+        assert media_player_info.get_state() == 'play'
+
+	}
+
         
