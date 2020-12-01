@@ -21,7 +21,7 @@ To use Rokuality in your tests or application, install the `rokuality-python` de
 ```
 
 ### The Basics:
-The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_roku.py) or [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) or [HDMI example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_playstation.py) for a full list of samples.
+The Rokuality bindings operate via Image Based Object Recognition and OCR techniques to identify 'elements' on the device screen and return them to your test scripts as Objects for verification and interaction. The project is modeled after the Selenium/Appium structure so if you've used those toolsets for browsers/mobile devices previously - this framework will look and feel very comfortable to you. See the [Roku example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_roku.py) or [XBox example tests](https://github.com/rokuality/rokuality-python/blob/master/tests/test_xbox.py) for a full list of samples.
 
 #### Declare a driver to connect to the server:
 ```python
