@@ -1,4 +1,4 @@
-# Rokuality Python - End to End Automation for Roku, XBox, Playstation, Cable SetTop Boxes, and More!
+# Rokuality Python - End to End Automation for Roku and XBox!
 
 The Rokuality platform allows you to distribute Roku and XBox end to end tests across multiple devices on your network. Our platform's goal is to provide a low cost solution for various video streaming platforms that otherwise don't offer an easily automatable solution! Download the [Rokuality App](https://www.rokuality.com) and start writing tests!
 
