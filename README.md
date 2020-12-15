@@ -40,7 +40,7 @@ There are two primary ways of finding elements on your device that are available
 ```python
     driver.finder().find_element(By().text("text to find on screen"))
 ```
-In this example, the Rokuality server will capture the image from your device screen, and then perform an evaluation against the found text within that image and match it against your locator. If your locator text is NOT found, then a NoSuchElementException will be thrown. Note that this will use Google Vision's ocr engine which requires you have a valid VisionUI service account setup with Google. See [Using Google Vision](#using-google-vision-ocr) for those details. Additional OCR options are coming soon including support for Amazon Rekognition.
+In this example, the Rokuality server will capture the image from your device screen, and then perform an evaluation against the found text within that image and match it against your locator. If your locator text is NOT found, then a NoSuchElementException will be thrown. Note that this will use Google Vision or Amazon Rekognition ocr engines as provided by your capability object. See [Using Google Vision](#using-google-vision-ocr) or [Using Amazon Rekognition](#using-amazon-rekognition-ocr) for those details.
 
 2) IMAGE - local image snippet file
 ```python
@@ -254,13 +254,15 @@ Various capabilities and values can be provided and passed to your driver instan
 | DevicePassword | Roku Only - The dev console password created when you enabled developer mode on your device.   | Required for Roku | String |
 | ImageMatchSimilarity | An optional image match similarity default used during Image locator evaluations. A lower value will allow for greater tolerance of image disimilarities between the image locator and the screen, BUT will also increase the possibility of a false positive.  | Optional | Double. Defaults to .90 |
 | ScreenSizeOverride | An optional 'WIDTHxHEIGHT' cap that all screen image captures will be resized to prior to match evaluation. Useful if you want to enforce test consistence across multiple device types and multiple developer machines or ci environments.  | Optional | String - I.e. a value of '1800x1200' will ensure that all image captures are resized to those specs before the locator evaluation happens no matter what the actual device screen size is.  |
-| OCRType | The OCR type - Currently the only supported OCR type is 'GoogleVision'. If the capability is set to 'GoogleVision' you MUST have a valid Google Vision account setup and provide the 'GoogleCredentials' capability with a valid file path to the oath2 .json file with valid credentials for the Google Vision service.  | Optional | String 
+| OCRType | The OCR type - Currently supported options are 'GoogleVision' and 'AmazonRekognition'. If the capability is set to 'GoogleVision' you MUST have a valid Google Vision account setup and provide the 'GoogleCredentials' capability with a valid file path to the oath2 .json file with valid credentials for the Google Vision service. If the capability is set to 'AmazonRekognition' then you MUST have a valid AWS account with an IAM role set with Rekognition priveleges and an AWS api access key id and secret key in file format you can provide, and you MUST provide the 'AWSCredentials' capability with a valid file path to this credentials file.  | Optional | String 
 | GoogleCredentials | The path to a valid .json Google Auth key service file. | Optional but Required if the 'OCRType' capability is set to 'GoogleVision' | The .json service key must exist on the machine triggering the tests. See [Using Google Vision](#using-google-vision-ocr) for additional details.  |
+| AWSCredentials | The path to a valid AWS credential file with an api key id and secret key. | Optional but Required if the 'OCRType' capability is set to 'AmazonRekognition' | The credential file must exist on the machine triggering the tests. See [Using Amazon Rekognition](#using-amazon-rekognition-ocr) for additional details.  |
 | MirrorScreen | If provided with a widthxheight value, then a window will be launched on the user's desktop showing the test activity in real time for the duration of the test session. Useful for debugging tests on remote devices.  | Optional | String - 'widthxheight' format. i.e. '1200x800' will launch a screen mirror with width 1200, and height 800. |
 | EnablePerformanceProfiling | Roku only. If provided your sideloadable .zip package will be updated for performance profiling. Then during the course of the execution you can retrieve the .bsprof file with CPU and memory utilization data from your channel.  | Optional | Boolean - true to allow for performance capturing. Defaults to false. |
 | ContentID | Roku only. A content id of a Roku deep link to load on session start.  | Optional - If provided you must also provide the 'MediaType' capability. | String |
 | MediaType | Roku only. The media type of a Roku deep link to load on session start.  | Optional - If provided you must also provide the 'ContentID' capability. | String |
 | AppPackageType | XBox only. Used if AppPackage is provided and indicates if the package is a 'appx' or 'appxbundle'.  | Optional - Valid values are 'appx' or 'appxbundle'. If this cap is not provided we assume the provided package is an 'appxbundle'. | String |
+| ImageCollectorInterval | A value in milliseconds that acts as a delay between image collection during a test session. If you experience 400 http errors during image collection, a small pause here can help alleviate this.  | Optional - A delay in milliseconds i.e. 250. Defaults to 0 | Integer |
 
 #### Element Timeouts and Polling:
 There are two main options when it comes to element timeouts and polling
@@ -294,6 +296,15 @@ You can use Google Vision as your OCR engine during test provided you have a val
     capabilities = DeviceCapabilities()
     capabilities.add_capability("OCRType", "GoogleVision")
     capabilities.add_capability("GoogleCredentials", "/path/to/your/vision/authkey.json")
+```
+
+#### Using Amazon Rekognition OCR:
+You can use Amazon Rekognition as your OCR engine during test provided you have a valid [AWS Account](https://aws.amazon.com/rekognition/?blog-cards.sort-by=item.additionalFields.createdDate&blog-cards.sort-order=desc) account setup with an api key with an IAM role set to allow Rekognition use. You must then create the standard [aws credential file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with your api key id and secret key.
+
+```python
+    capabilities = DeviceCapabilities()
+    capabilities.add_capability("OCRType", "AmazonRekognition")
+    capabilities.add_capability("AWSCredentials", "/path/to/your/aws/credential/file")
 ```
 
 #### Failing to find elements? :
