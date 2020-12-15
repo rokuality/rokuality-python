@@ -5,6 +5,18 @@ The Rokuality platform allows you to distribute Roku and XBox end to end tests a
 ### Getting started: Get the Rokuality App
 The [Rokuality App](https://www.rokuality.com/download) operates in 2 modes within a standalone app for Mac and Windows: First as a test debugger/builder which allows you to debug your Roku and XBox apps, and Second, as a server which can be used to execute/distribute your tests to your devices.
 
+Once you have installed the Rokuality app, you can start a server which listens for any incoming tests that you've written:
+
+<img src="https://rokuality-public.s3.amazonaws.com/StartServer.png" align="left" height="248" width="288" >
+
+<img src="https://rokuality-public.s3.amazonaws.com/ServerListening.png" align="left" height="248" width="288" > <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+
+Optionally, you can provide a desired set of capabilities and start a manual test session against your device. The test debugger includes a number of UI tools that are geared to help you construct your automated tests:
+
+<img src="https://rokuality-public.s3.amazonaws.com/NewTest.png" align="left" height="248" width="288" >
+
+<img src="https://rokuality-public.s3.amazonaws.com/Test.png" align="left" height="248" width="288" > <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+
 ### Device requirements: Roku
 Automated testing on Roku requires that you have Developer mode enabled on your device. [Enabling developer mode](https://blog.roku.com/developer/developer-setup-guide) on your Roku device is very straight forward. Keep track of your device username and password as created during the basic walkthrough as you'll need them to pass to your DeviceCapabilities at driver startup. Once you've enabled developer mode on your device you should be able to hit the device console page at http://yourrokudeviceip - Once that's done you are all set for automation!
 
